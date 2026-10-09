@@ -96,12 +96,17 @@ void    Parsing::checkPass(char **argv) throw(InvalidPassException)
 /* Allocates a new "t_cred" structure and appends all parameter values to their
  * specified structure field. It either returns the memory allocated structure
  * or throws an exception if there is no memory left.
+ * 
+ * In C++, there are two ways of allocating memory for structures with "new":
+ * - "new t_cred"   -> Allocates the struct and does not initialize its fields;
+ * - "new t_cred()" -> Allocates the struct and initializes its fields to 0,
+ *   nullptr, NULL or default constructor value (if not a primitive).
  */
 t_cred  *Parsing::buildCred(char **argv) throw(std::bad_alloc)
 {
     t_cred  *credentials;
     
-    credentials = new t_cred;
+    credentials = new t_cred();
     credentials->port = std::strtol(argv[1], NULL, 10);
     credentials->pass = argv[2];
     credentials->pass_str = std::string(argv[2]);
@@ -138,7 +143,15 @@ t_cred  *Parsing::parse(int argc, char **argv)
 void    Parsing::debugStructure(t_cred *credentials)
 {
     std::cout << RED "---> t_struct DEBUG: <---" DEF << std::endl;
-    std::cout << MAG "PORT" DEF ":\t\t" YEL << credentials->port << DEF << std::endl;
-    std::cout << MAG "PASS" DEF ":\t\t" YEL << credentials->pass << DEF << std::endl;
-    std::cout << MAG "PASS (string)" DEF ":\t" YEL << credentials->pass_str << DEF << std::endl;
+    if (!credentials)
+        std::cout << MAG "STRUCTURE" DEF ": \t" YEL "NULL" DEF << std::endl;
+    else
+    {
+        std::cout << MAG "PORT" DEF ":\t\t" YEL << credentials->port << DEF << std::endl;
+        if (!credentials->pass)
+            std::cout << MAG "PASS" DEF ":\t\t" YEL "NULL" << DEF << std::endl;
+        else
+            std::cout << MAG "PASS" DEF ":\t\t" YEL << credentials->pass << DEF << std::endl;
+        std::cout << MAG "PASS (string)" DEF ":\t" YEL << credentials->pass_str << DEF << std::endl;
+    }
 }
