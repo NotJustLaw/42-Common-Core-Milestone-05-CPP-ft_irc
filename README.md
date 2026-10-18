@@ -7,12 +7,28 @@ IRC is not safe due to:
 - Trust based file transfer - Transferring files sent by other connected clients can contain malware.
 
 Post all references, websites and documents used here:
+
+Books:
+- Beej's Guide to Network Programming;
+
+Documents:
 - https://www.rfc-editor.org/info/rfc1459/                  -> RFC-1459 (IRC) Standard;
 - https://en.wikipedia.org/wiki/Multiplexing                -> Multiplexing;
 - https://en.wikipedia.org/wiki/Poll_(Unix)                 -> Poll;
 - https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form    -> Backus-Naur Form;
 - https://en.wikipedia.org/wiki/Bulletin_board_system       -> BBS (context history);
 - https://github.com/bagder/irchistory                      -> IRC history;
+
+IRSSI:
+- https://en.wikipedia.org/wiki/Irssi                       -> IRSSI wikipedia page;
+- https://irssi.org/New-users/                              -> IRSSI quickstart page;
+
+Network:
+- https://www.ircnet.com/sasl                               -> Simple Authentication and Security Layer;
+- https://netsplit.de/                                      -> All networks, servers and channels;
+
+Q&A:
+- https://stackoverflow.com/questions/3229860/what-is-the-meaning-of-so-reuseaddr-setsockopt-option-linux
 
 Videos:
 - https://www.youtube.com/watch?v=6UbKenFipjo&t=59s         -> Internet Relay Chat (History);
