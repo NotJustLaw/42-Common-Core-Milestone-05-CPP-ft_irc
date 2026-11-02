@@ -6,7 +6,7 @@
 /*   By: law <law@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 14:05:46 by notjustlaw        #+#    #+#             */
-/*   Updated: 2026/11/02 12:26:18 by law              ###   ########.fr       */
+/*   Updated: 2026/11/02 12:50:53 by law              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include <stdexcept>
 #include <cstring>
 #include <vector>
+#include <map>
+#include <string>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -70,6 +72,8 @@ void Server::start()
 }
 
 void Server::run() {
+	std::map<int, std::string> inputBuffers; // Store unfinished input for each client, using its socket descriptor as the key.
+
 	std::vector<struct pollfd> pollFds;// A growable collection of descriptors for poll() to watch.
 	struct pollfd listener; // This structure tells poll() which socket to watch, what events we want, and what events actually happened.
 	listener.fd = _serverFd; // Watch the listening socket. Basically asking: "Tell me when someone wants to connect."
@@ -125,9 +129,35 @@ void Server::run() {
 
 				if (received > 0)
 				{
-					std::cout << "Client " << clientFd << ": ";
-					std::cout.write(buffer, received); // Print exactly the bytes received. recv() does not add a terminating '\\0'.
-					std::cout.flush();
+					std::string &pending = inputBuffers[clientFd]; // Get this client's buffer. If the key does not exist, the map creates an empty string.
+					pending.append(buffer, received); // Append exactly the received bytes. No terminating '\0' is needed.
+
+					std::string::size_type end;
+
+					while ((end = pending.find("\r\n")) != std::string::npos)
+					{
+						if (end > 510) // end is the number of bytes before CRLF. The full message must fit within 512 bytes.
+						{
+							std::cout << "Command too long from client "
+									<< clientFd << std::endl;
+							removeClient = true;
+							break; // Stop processing this client's input.
+						}
+						std::string line = pending.substr(0, end); // Extract one complete command without its CRLF ending.
+						pending.erase(0, end + 2); // Remove that command and both ending characters. Keep any remaining input.
+
+						if (line.empty())
+							continue; // Ignore empty lines.
+
+						std::cout << "Client " << clientFd
+								<< " command: " << line << std::endl;
+					}
+					if (!removeClient && (pending.size() > 511 || (pending.size() == 511 && pending[510] != '\r')))
+					{
+						std::cout << "Unfinished command too long from client "
+								<< clientFd << std::endl;
+						removeClient = true;
+					}
 				}
 				else
 				{
@@ -137,14 +167,12 @@ void Server::run() {
 
 			if (removeClient)
 			{
-				std::cout << "Disconnecting client: " << clientFd << std::endl;
 				close(clientFd);
+				inputBuffers.erase(clientFd); // Discard this client's unfinished input before its descriptor can be reused.
 				pollFds.erase(pollFds.begin() + i); // Remove this entry. Later entries shift one position to the left.
 			}
 			else
-			{
 				++i; // Advance only when we did not erase, so we do not skip the client that shifted into this position.
-			}
 		}
 	}
 }

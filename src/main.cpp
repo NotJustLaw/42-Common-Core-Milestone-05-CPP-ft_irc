@@ -6,7 +6,7 @@
 /*   By: law <law@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 13:49:50 by notjustlaw        #+#    #+#             */
-/*   Updated: 2026/11/02 11:36:23 by law              ###   ########.fr       */
+/*   Updated: 2026/11/02 12:53:13 by law              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,6 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    delete credentials;
+    delete credentials;	
     return 0;
 }
