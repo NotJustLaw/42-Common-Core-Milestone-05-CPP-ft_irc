@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: notjustlaw <notjustlaw@student.42.fr>      +#+  +:+       +#+         #
+#    By: law <law@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/10/06 13:49:28 by notjustlaw        #+#    #+#              #
-#    Updated: 2026/10/06 14:00:11 by notjustlaw       ###   ########.fr        #
+#    Updated: 2026/11/02 11:38:16 by law              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,12 +16,16 @@ CXX			= c++
 
 CXXFLAGS	= -Wall -Wextra -Werror -std=c++98
 
-HDR			= include/IRC.hpp		\
-			  include/Parsing.hpp
+CPPFLAGS 	= -Iinclude
 
-SRC			= src/main.cpp			\
-			  src/Parsing.cpp
+HDR 		= include/IRC.hpp \
+				include/Parsing.hpp \
+				include/Server.hpp
 
+SRC 		= src/main.cpp \
+				src/Parsing.cpp \
+				src/Server.cpp
+	  
 OBJ			= $(SRC:.cpp=.o)
 
 
